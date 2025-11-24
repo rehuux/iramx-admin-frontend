@@ -1,5 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <style>
+        body {
+            background: #0d0d0d;
+            margin: 0;
+            padding: 20px;
+            color: white;
+            font-family: Arial;
+        }
+
+        .box {
+            background: #111;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 0 20px rgba(0,0,255,.3);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            background: #222;
+            color: white;
+        }
+
+        button {
+            padding: 12px;
+            background: #0055ff;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #003ec7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h2>Admin Dashboard</h2>
+
+        <label>Aadhaar API Base</label>
+        <input id="aadhaarBase" />
+
+        <label>Aadhaar API Key</label>
+        <input id="aadhaarKey" />
+
+        <label>Mobile API Base</label>
+        <input id="mobileBase" />
+
+        <label>Mobile API Key</label>
+        <input id="mobileKey" />
+
+        <label>Banner Text</label>
+        <textarea id="bannerText"></textarea>
+
+        <button onclick="save()">Save</button>
+    </div>
+
+<script>
+const ADMIN_BASE = "https://iramx-admin-backend.vercel.app";
+
+async function loadData() {
+    const res = await fetch(`${ADMIN_BASE}/api/admin/getSettings`);
+    const data = await res.json();
+
+    document.getElementById("aadhaarBase").value = data.aadhaar_base;
+    document.getElementById("aadhaarKey").value = data.aadhaar_key;
+    document.getElementById("mobileBase").value = data.mobile_in_base;
+    document.getElementById("mobileKey").value = data.mobile_in_key;
+    document.getElementById("bannerText").value = data.banner_text;
+}
+
 async function save() {
     const token = localStorage.getItem("admin-token");
+    if (!token) return alert("Not logged in!");
+
     const body = {
         aadhaar_base: document.getElementById("aadhaarBase").value,
         aadhaar_key: document.getElementById("aadhaarKey").value,
@@ -18,10 +108,14 @@ async function save() {
     });
 
     const data = await res.json();
-
     if (data.success) {
-        alert("Settings saved!");
+        alert("Settings saved successfully!");
     } else {
         alert("Error: " + data.error);
     }
 }
+
+loadData();
+</script>
+</body>
+</html>
