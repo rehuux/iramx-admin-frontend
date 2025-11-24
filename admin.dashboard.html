@@ -42,6 +42,7 @@
             color: white;
             cursor: pointer;
             width: 100%;
+            margin-top: 10px;
         }
 
         button:hover {
@@ -70,10 +71,16 @@
         <textarea id="bannerText"></textarea>
 
         <button onclick="save()">Save</button>
+        <button onclick="logout()" style="background:#ff3333;">Logout</button>
     </div>
 
 <script>
 const ADMIN_BASE = "https://iramx-admin-backend.vercel.app";
+
+// redirect if not logged in
+if (!localStorage.getItem("admin-token")) {
+    window.location.href = "admin-login.html";
+}
 
 async function loadData() {
     const res = await fetch(`${ADMIN_BASE}/api/admin/getSettings`);
@@ -113,6 +120,11 @@ async function save() {
     } else {
         alert("Error: " + data.error);
     }
+}
+
+function logout() {
+    localStorage.removeItem("admin-token");
+    window.location.href = "admin-login.html";
 }
 
 loadData();
